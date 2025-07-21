@@ -4,6 +4,16 @@ define('VALID_REQUEST', true);
 
 require_once './core/init.php';
 
-Core\setControllers(
-    fn() => loadControllers('example')
-);
+use Core\Router as Router;
+use Core\Enum as Enum;
+use Core\Common as Common;
+use Core\Controller as Controller;
+
+// Set up routes and controllers
+Router\addRoute('/example', [
+    fn() => Common\loadController('example'),
+    // Add more controllers as needed
+]);
+
+// Boot the application
+Core\boot();

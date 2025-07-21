@@ -1,29 +1,34 @@
 <?php
 if(!defined('VALID_REQUEST')) die();
 
-use function Core\Common\loadService;
-use function Core\Common\renderView;
-use Core\Enum\Method;
-use function Core\Controller\addAction;
-use function Core\Controller\getFormData;
+use Core\Enum as Enum;
+use Core\Common as Common;
+use Core\Controller as Controller;
 
 //Load file example.service.php
-loadService('example');
+Common\loadService('example');
 
-addAction(Method::Get, '/', function() {
-    renderView('example/index');
-});
+Controller\addAction(Enum\Method::Get, '/example', fn() => index());
+Controller\addAction(Enum\Method::Get, '/example/detail', fn() => detail());
 
-addAction(Method::Get, '/detail', function(){
-    $id = getQuery('id');
+function index(): callable {
+    return Controller\sendView('example/index');
+}
+
+function detail(): callable {
+    $id = Controller\getQuery('id');
     if(empty($id))
-        return;
+        return Controller\sendRedirect('/example');
 
-    $example = getExample($id);
-    if($example == null){
-        header('Location: /');
-        exit();
-    }
+    $example = null;//getExample($id);
+    if($example == null)
+        return Controller\notFound();
 
-    renderView('example/detail', compact($example));
-})
+    $example = [
+        'id' => 1,
+        'name' => 'Example Name',
+        'description' => 'This is an example description.'
+    ];
+
+    return Controller\sendView('example/detail', compact('example'));
+}

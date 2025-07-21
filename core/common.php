@@ -41,6 +41,6 @@ function loadService(string $serviceName): void {
     require_once WEB_DIR . "/services/{$serviceName}.service.php";
 }
 
-function loadControllers(string $controllerName): void {
+function loadController(string $controllerName): void {
     require_once WEB_DIR . "/controllers/{$controllerName}.controller.php";
 }
