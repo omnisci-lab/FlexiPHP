@@ -2,7 +2,8 @@
 
 if(!defined('VALID_REQUEST')) die();
 
-define('WEB_DIR', __DIR__);
+
+define('DB_PROVIDER', 'sqlite'); // or 'mysql'
 
 define('DB_HOST', 'localhost');
 define('DB_PORT', '3306');

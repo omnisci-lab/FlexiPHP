@@ -20,7 +20,7 @@ function detail(): callable {
     if(empty($id))
         return Controller\sendRedirect('/example');
 
-    $example = null;//getExample($id);
+    $example = getExample($id);
     if($example == null)
         return Controller\notFound();
 

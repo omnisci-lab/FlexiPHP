@@ -23,13 +23,23 @@ use function Core\Str\startsWith;
 function boot(): void {
     global $routes;
     $reqPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+    $hasMatchedPath = false;
+
     // Load routes
     foreach ($routes as $route) {
         $path = $route['path'];
         $action = $route['action'];
 
         // Check if the request path matches the route
-        if (startsWith($reqPath, $path) || $reqPath === $path)
+        if (startsWith($reqPath, $path) || $reqPath === $path) {
             $action();
+            $hasMatchedPath = true;
+        }
+    }
+
+    if(!$hasMatchedPath) {
+        // No route matched, return 404
+        http_response_code(404);
+        exit('404 Not Found');
     }
 }

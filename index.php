@@ -15,5 +15,10 @@ Router\addRoute('/example', [
     // Add more controllers as needed
 ]);
 
+Router\addRoute('/api/example', [
+    fn() => Common\loadController('example-api'),
+    // Add more API controllers as needed
+]);
+
 // Boot the application
 Core\boot();
