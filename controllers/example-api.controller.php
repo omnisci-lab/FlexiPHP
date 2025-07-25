@@ -7,8 +7,8 @@ use Core\Controller as Controller;
 
 Common\loadService('example');
 
-Controller\addAction(Enum\Method::Get, '/api/example/list', fn() => index());
-Controller\addAction(Enum\Method::Get,'/api/example/detail', fn() => getDetail());
+Controller\addAction(Enum\Method::Get, '/api/example/list', fn() => index(), null);
+Controller\addAction(Enum\Method::Get,'/api/example/detail', fn() => getDetail(), null);
 
 function index(): callable {
     $examples = getExampleList();

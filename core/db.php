@@ -20,14 +20,17 @@ function InitPDO(): PDO {
     return $pdo;
 }
 
+global $pdo;
+$pdo = InitPDO();
+
 function executeNonQuery(string $query, array $params = []): bool {
-    $pdo = InitPDO();
+    global $pdo;
     $stmt = $pdo->prepare($query);
     return $stmt->execute($params);
 }
 
 function executeQueryAll(string $query, array $params = []): array {
-    $pdo = InitPDO();
+    global $pdo;
     $stmt = $pdo->prepare($query);
     $stmt->execute($params);
 
@@ -35,7 +38,7 @@ function executeQueryAll(string $query, array $params = []): array {
 }
 
 function executeQuery(string $query, array $params = []): ?array {
-    $pdo = InitPDO();
+    global $pdo;
     $stmt = $pdo->prepare($query);
     $stmt->execute($params);
 
@@ -46,8 +49,8 @@ function executeQuery(string $query, array $params = []): ?array {
  * @return (int|string)
  */
 
-function executeScalar(string $query, array $params = []): mixed {
-    $pdo = InitPDO();
+function executeScalar(string $query, array $params = []): int|string {
+    global $pdo;
     $stmt = $pdo->prepare($query);
     $stmt->execute($params);
 

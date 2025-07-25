@@ -7,12 +7,21 @@ define('WEB_DIR', dirname(__DIR__));
 
 require_once './config.php';
 
-if(!defined('DB_HOST') || !defined('DB_PORT') || !defined('DB_USER') || !defined('DB_PWD'))
-    exit('Required database configuration is missing.');
+if(!defined('DB_PROVIDER') || !in_array(DB_PROVIDER, ['mysql', 'sqlite']))
+    exit('Invalid or missing database provider configuration.');
+
+if(DB_PROVIDER === 'mysql') {
+    if(!defined('DB_HOST') || !defined('DB_NAME') || !defined('DB_USER') || !defined('DB_PWD'))
+        exit('Required database configuration is missing.');
+
+    if(!defined('DB_PORT'))
+        define('DB_PORT', '3306'); // Default MySQL port
+}
 
 require_once './core/enums.php';
 require_once './core/string.php';
 require_once './core/router.php';
+require_once './core/jwt.php';
 require_once './core/db.php';
 require_once './core/common.php';
 require_once './core/controller.php';
