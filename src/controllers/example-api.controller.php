@@ -7,8 +7,9 @@ use Core\Controller as Controller;
 
 Common\loadService('example');
 
-Controller\addAction(Enum\Method::Get, '/api/example/list', fn() => index(), null);
-Controller\addAction(Enum\Method::Get,'/api/example/detail', fn() => getDetail(), null);
+Controller\addAction(Enum\Method::Get, '/api/example/list', fn() => index());
+Controller\addAction(Enum\Method::Get,'/api/example/detail', fn() => getDetail());
+Controller\addAction(Enum\Method::Get,'/api/example/detail-text', fn() => getDetailText());
 
 function index(): callable {
     $examples = getExampleList();
@@ -26,6 +27,18 @@ function getDetail(): callable {
         return Controller\sendJson(['message' => 'Example not found'], Enum\HttpStatusCode::NOT_FOUND);
 
     return Controller\sendJson(['data' => $example, 'message' => 'Found']);
+}
+
+function getDetailText(): callable {
+    $id = Controller\getQuery('id');
+    if(empty($id))
+        return Controller\sendText('ID is required', Enum\HttpStatusCode::BAD_REQUEST);
+
+    $example = getExample($id);
+    if($example == null)
+        return Controller\sendText('Example not found', Enum\HttpStatusCode::NOT_FOUND);
+
+    return Controller\sendText("Example ID: {$example['id']}\nName: {$example['name']}\nDescription: {$example['description']}");
 }
 
 function create(): callable {
