@@ -1,4 +1,8 @@
 <?php
+/**
+ * Chứa những enum quan trọng mà framework sẽ sử dụng
+ */
+
 namespace Core\Enum;
 
 if(!defined('VALID_REQUEST')) die();

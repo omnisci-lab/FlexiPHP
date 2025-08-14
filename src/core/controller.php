@@ -7,17 +7,20 @@ use function Core\Jwt\getCurrentUser;
 use function Core\Common\validateCsrfToken;
 use function Core\Common\renderView;
 
-if(!defined('VALID_REQUEST')) die();
+if (!defined('VALID_REQUEST'))
+    die();
 
-function getQuery(string $queryName, int|string|null $default = null): int|string|null {
-    if(isset($_GET[$queryName]))
+function getQuery(string $queryName, int|string|null $default = null): int|string|null
+{
+    if (isset($_GET[$queryName]))
         return $_GET[$queryName];
 
     return $default;
 }
 
-function getFormData(string $key, int|string|null $default = null) : int|string|null {
-    if(isset($_POST[$key]))
+function getFormData(string $key, int|string|null $default = null): int|string|null
+{
+    if (isset($_POST[$key]))
         return $_POST[$key];
 
     return $default;
@@ -29,7 +32,7 @@ function getJson(): array
         return [];
 
     if (!isset($_SERVER['CONTENT_TYPE']) || stripos($_SERVER['CONTENT_TYPE'], 'application/json') === false)
-       return [];
+        return [];
 
     $raw = file_get_contents('php://input');
     $data = json_decode($raw, true);
@@ -41,28 +44,33 @@ function getJson(): array
     return $data;
 }
 
-function mapMethod(string $method): Method {
-    switch ($method){
-        case 'GET': return Method::Get;
-        case 'POST': return Method::Post;
-        default: return Method::Get;
+function mapMethod(string $method): Method
+{
+    switch ($method) {
+        case 'GET':
+            return Method::Get;
+        case 'POST':
+            return Method::Post;
+        default:
+            return Method::Get;
     }
 }
 
-function addAction(Method $method, string $path, callable $func, string $authorizeFor = null): void {
+function addAction(Method $method, string $path, callable $func, string $authorizeFor = null): void
+{
     $reqPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-    if($path !== $reqPath)
+    if ($path !== $reqPath)
         return;
 
-    if($method !== mapMethod($_SERVER['REQUEST_METHOD']))
+    if ($method !== mapMethod($_SERVER['REQUEST_METHOD']))
         return;
 
-    if($method !== Method::Get && !validateCsrfToken()){
-            http_response_code(403);
-            exit('Invalid CSRF token');
+    if ($method !== Method::Get && !validateCsrfToken()) {
+        http_response_code(403);
+        exit('Invalid CSRF token');
     }
 
-    if($authorizeFor !== null) {
+    if ($authorizeFor !== null) {
         $currentUser = getCurrentUser();
         if (!$currentUser || $currentUser['role'] !== $authorizeFor) {
             http_response_code(403);
@@ -71,7 +79,7 @@ function addAction(Method $method, string $path, callable $func, string $authori
     }
 
     $view = $func();
-    if(is_callable($view)){
+    if (is_callable($view)) {
         $view();
     } else {
         http_response_code(500);
@@ -79,8 +87,9 @@ function addAction(Method $method, string $path, callable $func, string $authori
     }
 }
 
-function sendRedirect(string $url): callable {
-    $fn = function() use ($url) {
+function sendRedirect(string $url): callable
+{
+    $fn = function () use ($url) {
         header("Location: {$url}");
         exit();
     };
@@ -88,8 +97,9 @@ function sendRedirect(string $url): callable {
     return $fn;
 }
 
-function notFound(): callable {
-    $fn = function() {
+function notFound(): callable
+{
+    $fn = function () {
         http_response_code(404);
         exit('404 Not Found');
     };
@@ -97,8 +107,9 @@ function notFound(): callable {
     return $fn;
 }
 
-function sendView(string $viewName, array $data = []): callable {
-    $fn = function() use ($viewName, $data) {
+function sendView(string $viewName, array $data = []): callable
+{
+    $fn = function () use ($viewName, $data) {
         http_response_code(200);
         renderView($viewName, $data);
     };
@@ -106,8 +117,9 @@ function sendView(string $viewName, array $data = []): callable {
     return $fn;
 }
 
-function sendJson(array $data, HttpStatusCode $statusCode = HttpStatusCode::OK): callable {
-    $fn = function() use ($data, $statusCode) {
+function sendJson(array $data, HttpStatusCode $statusCode = HttpStatusCode::OK): callable
+{
+    $fn = function () use ($data, $statusCode) {
         header('Content-Type: application/json');
         http_response_code($statusCode->value);
         echo json_encode($data);
@@ -116,8 +128,9 @@ function sendJson(array $data, HttpStatusCode $statusCode = HttpStatusCode::OK):
     return $fn;
 }
 
-function sendText(string $text, HttpStatusCode $statusCode = HttpStatusCode::OK): callable {
-    $fn = function() use ($text, $statusCode) {
+function sendText(string $text, HttpStatusCode $statusCode = HttpStatusCode::OK): callable
+{
+    $fn = function () use ($text, $statusCode) {
         header('Content-Type: text/plain');
         http_response_code($statusCode->value);
         echo $text;
@@ -127,9 +140,10 @@ function sendText(string $text, HttpStatusCode $statusCode = HttpStatusCode::OK)
 }
 
 //Đang thử nghiệm
-function sendFile(string $filePath, string $fileName = null): callable {
-    $fn = function() use ($filePath, $fileName) {
-        if(!file_exists($filePath)){
+function sendFile(string $filePath, string $fileName = null): callable
+{
+    $fn = function () use ($filePath, $fileName) {
+        if (!file_exists($filePath)) {
             http_response_code(404);
             exit('File not found');
         }
