@@ -4,6 +4,8 @@ if(!defined('VALID_REQUEST')) die();
 use Core\Enum as Enum;
 use Core\Common as Common;
 use Core\Controller as Controller;
+use Core\Response as Response;
+use Core\Request as Request;
 
 Common\loadService('example');
 
@@ -14,40 +16,40 @@ Controller\addAction(Enum\Method::Get,'/api/example/detail-text', fn() => getDet
 function index(): callable {
     $examples = getExampleList();
 
-    return Controller\sendJson($examples);
+    return Response\sendJson($examples);
 }
 
 function getDetail(): callable {
-    $id = Controller\getQuery('id');
+    $id = Request\getQuery('id');
     if(empty($id))
-        return Controller\sendJson(['message' => 'ID is required'], Enum\HttpStatusCode::BAD_REQUEST);
+        return Response\sendJson(['message' => 'ID is required'], Enum\HttpStatusCode::BAD_REQUEST);
 
     $example = getExample($id);
     if($example == null)
-        return Controller\sendJson(['message' => 'Example not found'], Enum\HttpStatusCode::NOT_FOUND);
+        return Response\sendJson(['message' => 'Example not found'], Enum\HttpStatusCode::NOT_FOUND);
 
-    return Controller\sendJson(['data' => $example, 'message' => 'Found']);
+    return Response\sendJson(['data' => $example, 'message' => 'Found']);
 }
 
 function getDetailText(): callable {
-    $id = Controller\getQuery('id');
+    $id = Request\getQuery('id');
     if(empty($id))
-        return Controller\sendText('ID is required', Enum\HttpStatusCode::BAD_REQUEST);
+        return Response\sendText('ID is required', Enum\HttpStatusCode::BAD_REQUEST);
 
     $example = getExample($id);
     if($example == null)
-        return Controller\sendText('Example not found', Enum\HttpStatusCode::NOT_FOUND);
+        return Response\sendText('Example not found', Enum\HttpStatusCode::NOT_FOUND);
 
-    return Controller\sendText("Example ID: {$example['id']}\nName: {$example['name']}\nDescription: {$example['description']}");
+    return Response\sendText("Example ID: {$example['id']}\nName: {$example['name']}\nDescription: {$example['description']}");
 }
 
 function create(): callable {
-    $data = Controller\getJson();
+    $data = Request\getJson();
     if(empty($data['name']) || empty($data['description'])) {
-        return Controller\sendJson(['message' => 'Name and description are required'], Enum\HttpStatusCode::BAD_REQUEST);
+        return Response\sendJson(['message' => 'Name and description are required'], Enum\HttpStatusCode::BAD_REQUEST);
     }
 
     // Insert the data into the database
 
-    return Controller\sendJson(['message' => 'Example created successfully'], Enum\HttpStatusCode::CREATED);
+    return Response\sendJson(['message' => 'Example created successfully'], Enum\HttpStatusCode::CREATED);
 }

@@ -23,6 +23,8 @@ require_once './core/string.php';
 require_once './core/router.php';
 require_once './core/common.php';
 require_once './core/html.php';
+require_once './core/request.php';
+require_once './core/response.php';
 require_once './core/controller.php';
 require_once './core/db.php';
 require_once './core/jwt.php';
