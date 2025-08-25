@@ -8,7 +8,7 @@ $routes = [];
 /**
  * @param callable[] $actions
  */
-function addRoute(string $path, $actions): void {
+function addRoute(string $path, array $actions): void {
     global $routes;
     foreach ($actions as $action) {
         if (!is_callable($action))

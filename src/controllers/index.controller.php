@@ -6,6 +6,7 @@ use Core\Enum as Enum;
 use Core\Controller as Controller;
 use Core\Response as Response;
 use Core\Request as Request;
+use Core\Authenticator as Authenticator;
 
 Controller\addAction(Enum\Method::Get, '/', fn() => index());
 Controller\addAction(Enum\Method::Get, '/login', fn() => login());
@@ -32,8 +33,8 @@ function submitLogin(): callable {
 
     if($username == 'admin' && $password == 'password') {
         // Simulate successful login
-        $_SESSION['user'] = ['username' => $username];
-        return Response\sendRedirect('/index');
+        Authenticator\auth_login($username);
+        return Response\sendRedirect('/');
     }
 
     $message = 'Invalid username or password';

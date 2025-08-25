@@ -5,7 +5,31 @@ if(!defined('VALID_REQUEST')) die();
 
 define('WEB_DIR', dirname(__DIR__));
 
+if(!file_exists('./config.php'))
+    exit('Configuration file config.php is missing. Please create it based on config.example.php.');
+
 require_once './config.php';
+
+if(!defined('AUTH_COOKIE_NAME')) {
+    file_put_contents('config.php', "\ndefine('AUTH_COOKIE_NAME', '');\n", FILE_APPEND);
+    sleep(3);
+    header('Location: ' . $_SERVER['REQUEST_URI']);
+    exit();
+}
+
+if(!defined('AUTH_SECRET_KEY')) {
+    file_put_contents('config.php', "\ndefine('AUTH_SECRET_KEY', '');\n", FILE_APPEND);
+    sleep(3);
+    header('Location: ' . $_SERVER['REQUEST_URI']);
+    exit();
+}
+
+if(!defined('AUTH_DEFAULT_EXPIRY')) {
+    file_put_contents('config.php', "\ndefine('AUTH_DEFAULT_EXPIRY', 3600 * 24 * 7);\n", FILE_APPEND);
+    sleep(3);
+    header('Location: ' . $_SERVER['REQUEST_URI']);
+    exit();
+}
 
 if(!defined('DB_PROVIDER') || !in_array(DB_PROVIDER, ['mysql', 'sqlite']))
     exit('Invalid or missing database provider configuration.');
